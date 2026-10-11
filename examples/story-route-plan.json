@@ -1,0 +1,77 @@
+{
+  "start": "arrival",
+  "unreachable": [],
+  "terminalRoutes": [
+    {
+      "kind": "explicit-end",
+      "knot": "arrival",
+      "choices": [
+        1
+      ]
+    },
+    {
+      "kind": "terminal-knot",
+      "knot": "recorder",
+      "choices": [
+        0,
+        0
+      ]
+    }
+  ],
+  "cycleKnots": [
+    "arrival",
+    "relay"
+  ],
+  "trapKnots": [],
+  "testCases": [
+    {
+      "from": "arrival",
+      "index": 0,
+      "text": "Follow the signal",
+      "target": "relay",
+      "choices": [
+        0
+      ]
+    },
+    {
+      "from": "arrival",
+      "index": 1,
+      "text": "Leave the station",
+      "target": "END",
+      "choices": [
+        1
+      ]
+    },
+    {
+      "from": "relay",
+      "index": 0,
+      "text": "Inspect the recorder",
+      "target": "recorder",
+      "choices": [
+        0,
+        0
+      ]
+    },
+    {
+      "from": "relay",
+      "index": 1,
+      "text": "Return to the airlock",
+      "target": "arrival",
+      "choices": [
+        0,
+        1
+      ]
+    }
+  ],
+  "terminalRouteCount": 2,
+  "terminalRoutesTruncated": false,
+  "coverage": {
+    "reachableKnots": 3,
+    "totalKnots": 3,
+    "reachableChoices": 4,
+    "totalChoices": 4,
+    "plannedChoices": 4,
+    "truncated": false
+  },
+  "note": "Deterministic shortest input traces for the restricted structured story graph, not native Ink runtime proof."
+}

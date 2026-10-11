@@ -1,0 +1,148 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ink | Branching story lab</title><style>
+:root{color-scheme:dark;--ink:#e8edf2;--muted:#9ca9b9;--canvas:#0b1016;--panel:#151b24;--line:#313b49;--accent:#ef705e;--cool:#90d5d4;--good:#a4dfa9;--bad:#ffc1a9}
+*{box-sizing:border-box}html{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.5}body{margin:0;background:var(--canvas);color:var(--ink);min-width:270px}
+main{max-width:1160px;margin:auto;padding:clamp(14px,3vw,32px)}.eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.19em;text-transform:uppercase;color:var(--accent)}h1{font-size:clamp(1.4rem,3.6vw,2.2rem);letter-spacing:-.035em;line-height:1.12;margin:.35rem 0 .8rem}h2{font-size:1rem;letter-spacing:.02em;margin:0 0 12px}.sub{color:var(--muted);font-size:.86rem;max-width:65ch;margin:0 0 22px}.columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:clamp(12px,2.3vw,22px);min-width:0}.stack{display:grid;gap:13px}.actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.btn{font:inherit;border:1px solid #637187;border-radius:6px;padding:11px 14px;min-height:44px;background:#273240;color:var(--ink);font-weight:650;cursor:pointer}.btn.primary{background:var(--accent);border-color:var(--accent);color:#1d1011}.btn:disabled{opacity:.55;cursor:wait}.btn:hover:not(:disabled){filter:brightness(1.15)}.btn:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--cool);outline-offset:3px}.btn.ghost{background:transparent;border-color:var(--line);font-weight:500}textarea{width:100%;min-height:240px;resize:vertical;color:#dfe9ea;background:#0d131b;border:1px solid #46556a;border-radius:8px;padding:13px;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}select{background:#111923;color:var(--ink);padding:12px;border:1px solid #66758a;border-radius:6px;min-height:44px;min-width:125px}.notice{padding:10px 13px;border:1px solid var(--line);border-left:3px solid var(--cool);background:#0f1c24;border-radius:4px;color:#cbdadf;font-size:.85rem}.notice.error{border-left-color:#ff9f85;background:#311a1b;color:#ffd1c0}.notice.ok{border-left-color:var(--good)}.metrics{display:flex;flex-wrap:wrap;gap:8px}.metric{padding:6px 10px;border:1px solid #4b596a;border-radius:5px;color:var(--muted);font:12px ui-monospace,monospace}.metric strong{color:var(--ink);font-weight:700}.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:9px}.node{padding:12px;border:1px solid #435062;border-radius:8px;background:#101720;overflow-wrap:anywhere}.node strong{color:var(--ink);font-size:.9rem}.node small{display:block;color:var(--muted);font-size:.75rem;margin-top:4px}.node.current{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}.node.unreachable{border-style:dashed;opacity:.64}.node.final{border-color:#477d71}.node.dead{border-color:#b17c63}.readout{font:700 clamp(1.3rem,2.4vw,2.1rem)/1.2 ui-monospace,monospace;color:var(--cool);overflow-wrap:anywhere}.trace{list-style:none;padding:0;margin:0;display:grid;gap:6px}.trace li{padding:8px 10px;border-left:2px solid #526174;background:#101720;font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}.story{padding:15px;border:1px solid #3d4a56;border-radius:9px;background:#101821}.story p{line-height:1.65}.choices{display:grid;gap:8px}.choices button{text-align:left}.foot{border-top:1px solid var(--line);margin-top:20px;padding-top:13px;color:var(--muted);font-size:.78rem}details{border:1px solid var(--line);border-radius:6px}summary{padding:9px 11px;cursor:pointer;color:#becfda}pre{max-height:380px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;background:#080d12;font:12px/1.5 ui-monospace,monospace}label{font-size:.87rem;font-weight:650;color:#cdd9e4;display:block;margin-bottom:8px}button[data-choice]{width:100%}.small{font-size:.81rem;color:var(--muted)}
+@media(max-width:720px){.columns{grid-template-columns:1fr}.panel{padding:14px}textarea{min-height:210px}.actions>.btn{flex:1 1 auto}h1{max-width:22ch}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.project-load{padding:12px;background:#101720;border:1px solid var(--line);border-radius:8px}.project-load label{margin:0 0 7px}.project-load input{font:13px ui-monospace,monospace;min-width:0;flex:1 1 180px;min-height:44px;padding:10px;color:var(--ink);background:#0d131b;border:1px solid #66758a;border-radius:6px}.project-load input:focus-visible{outline:3px solid var(--cool);outline-offset:2px}
+
+</style></head><body><main>
+<header><div class="eyebrow">INK NARRATIVE / BRANCHING STORY</div><h1>Choice consequence lab</h1><p class="sub">Inspect a branching story, follow a witness's choices, and see which endings can be reached. What looks like a single decision can connect to an entire unseen route.</p></header>
+<div class="columns"><section class="panel stack" aria-labelledby="source-title"><div><h2 id="source-title">01 / Source</h2><label for="story">Structured story JSON</label><textarea id="story" spellcheck="false" aria-describedby="story-hint"></textarea><div class="small" id="story-hint">Read-only experiment. Creating .ink source or compiling a game artifact remains a separate confirmed agent tool.</div></div><div class="project-load"><label for="project-file">Load existing JSON from the bound game (replaces unsaved editor text, never writes game files)</label><div class="actions"><input id="project-file" type="text" autocomplete="off" spellcheck="false" placeholder="game-story.json" aria-label="Root-level game JSON filename"><button class="btn ghost" id="load-file" type="button">Load from game</button></div></div><div class="actions"><button class="btn ghost" id="sample" type="button">Load example</button><button class="btn primary" id="inspect" type="button">Inspect branches</button><button class="btn" id="routes" type="button">Map replay paths</button><button class="btn" id="preview" type="button">Preview Ink source</button></div><div id="status" class="notice" role="status" aria-live="polite">Ready to inspect.</div><div class="metrics" id="metrics" aria-label="Story coverage"></div><details><summary>Source, branch routes and diagnostics</summary><pre id="raw" aria-label="Story analysis JSON">No analysis yet.</pre></details></section>
+<section class="panel stack" aria-labelledby="reader-title"><div><h2 id="reader-title">02 / Story traversal</h2><div class="small">Choices are evaluated by the plugin's simulator. Actual inklecate and inkjs runtime playback must be tested separately.</div></div><div class="actions"><button class="btn primary" id="begin" type="button">Begin story</button><button class="btn ghost" id="reset" type="button" disabled>Restart</button></div><div id="readout" class="readout" aria-live="polite">Not started</div><div id="scene" class="story"><p>Press Begin story to follow the sample's first path.</p></div><div id="choices" class="choices" aria-label="Available story choices"></div><h2>Route travelled</h2><ol id="trace" class="trace" aria-live="polite"><li>No choices made.</li></ol><h2>03 / Reachable endings</h2><div class="actions" role="group" aria-label="Route collection"><button type="button" class="btn" id="paths-endings" aria-pressed="true">Ending routes</button><button type="button" class="btn" id="paths-branches" aria-pressed="false">Branch decisions</button></div><div class="actions" role="group" aria-label="Browse routes"><button class="btn ghost" type="button" id="paths-prev" disabled>Previous 12</button><span class="small" id="paths-summary" role="status" aria-live="polite">No routes mapped.</span><button class="btn ghost" type="button" id="paths-next" disabled>Next 12</button></div><div id="paths" class="choices" aria-label="Replayable ending paths"></div></section></div>
+<footer class="foot">Scope: plain-text knots and persistent choices. Dynamic guards, variable changes and external functions belong in full Ink and require an actual Ink compiler/runtime test.</footer></main>
+<script>
+const waiting = new Map();
+const contextListeners = new Set();
+let seq = 0;
+window.addEventListener("message", (event) => {
+  if (event.source !== parent) return;
+  if (event.data?.type === "studio-plugin-context-changed") {
+    for (const listener of contextListeners) {
+      try {
+        listener();
+      } catch {}
+    }
+    return;
+  }
+  if (event.data?.type !== "studio-plugin-result") return;
+  const p = waiting.get(event.data.id);
+  if (!p) return;
+  waiting.delete(event.data.id);
+  clearTimeout(p.timer);
+  event.data.error ? p.reject(new Error(event.data.error)) : p.resolve(event.data.result);
+});
+window.studioPlugin = {
+  onContextChanged(callback) {
+    contextListeners.add(callback);
+    return () => contextListeners.delete(callback);
+  },
+  call(method, name, args, options) {
+    // A long setup action may extend its local wait; host validation, confirmations and
+    // execution deadlines still apply. Timing out never means a remote job was cancelled.
+    const timeoutMs = options?.timeoutMs ?? 60000;
+    if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 1800000)
+      return Promise.reject(new Error("Invalid panel wait duration"));
+    const id = String(++seq);
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        waiting.delete(id);
+        reject(new Error("Studio request timed out. Inspect its status before retrying."));
+      }, timeoutMs);
+      waiting.set(id, { resolve, reject, timer });
+      parent.postMessage({ type: "studio-plugin-request", id, method, name, args }, "*");
+    });
+  },
+};
+window.addEventListener("pagehide", () => {
+  for (const p of waiting.values()) {
+    clearTimeout(p.timer);
+    p.reject(new Error("Panel closed"));
+  }
+  waiting.clear();
+});
+
+/** Small framework-free SDK primitives; custom panels can also use their own framework. */
+window.studioPlugin.ui = {
+  text(tag, value) {
+    const el = document.createElement(tag);
+    el.textContent = String(value ?? "Unknown");
+    return el;
+  },
+  status(label, value) {
+    const row = document.createElement("p");
+    const title = document.createElement("strong");
+    title.textContent = label + ": ";
+    row.append(title, document.createTextNode(String(value ?? "Unknown")));
+    return row;
+  },
+  error(message) {
+    const el = document.createElement("p");
+    el.setAttribute("role", "alert");
+    el.textContent = String(message);
+    return el;
+  },
+  job(job) {
+    const card = document.createElement("article");
+    card.style.cssText = "border-top:1px solid #555;padding:12px 0";
+    card.append(
+      this.text("strong", job.operation ?? job.title ?? "Asset job"),
+      this.status("Status", job.status),
+      this.status("Use", job.use?.stage ?? "Not verified"),
+      this.status("Charged credits", job.creditsCharged ?? "Not reported"),
+      this.status("Refunded credits", job.creditsRefunded ?? "Not reported"),
+    );
+    if (job.generationId) card.append(this.status("Generation", job.generationId));
+    for (const file of job.files ?? []) card.append(this.text("div", file));
+    if (job.error) card.append(this.error(job.error));
+    return card;
+  },
+};
+
+</script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sample={title:'The Last Relay — training scenario',start:'arrival',knots:[
+{id:'arrival',paragraphs:['The observation station is empty. A small light moves behind the sealed glass.','A recorded message begins again, without acknowledging you.'],choices:[{text:'Follow the transmission',target:'signal'},{text:'Read the evacuation order',target:'orders'}]},
+{id:'signal',paragraphs:['The message is addressed to a person who has never worked here.','It was recorded before the station was constructed.'],choices:[{text:'Replay the message',target:'signal'},{text:'Leave the station',target:'END'}]},
+{id:'orders',paragraphs:['The evacuation was ordered before anyone arrived.'],choices:[{text:'Return to the hall',target:'arrival'},{text:'Seal the record and leave',target:'END'}]}
+]};
+let history=[],revision=0,busy=false,pathCases=[],pathPage=0,pathTotal=0,pathTruncated=false,endingCases=[],branchCases=[],endingTotal=0,branchTotal=0,endingTruncated=false,branchTruncated=false,pathMode='ending';
+const PATH_PAGE_SIZE=12;
+function showPaths(){
+ const count=pathCases.length,start=pathPage*PATH_PAGE_SIZE,end=Math.min(start+PATH_PAGE_SIZE,count);
+ $('paths-prev').disabled=busy||pathPage===0;$('paths-next').disabled=busy||end>=count;
+ $('paths-summary').textContent=count?`Showing ${start+1}–${end} of ${pathTotal} ${pathMode==='ending'?'ending routes':'branch decisions'}${pathTruncated?' (first '+count+' provided; plan truncated)':''}`:(pathMode==='ending'?'No reachable ending routes. Switch to Branch decisions to inspect cycles and traps.':'No reachable branch decisions.');
+ $('paths').replaceChildren(...pathCases.slice(start,end).map((route,j)=>{
+  const i=start+j,button=document.createElement('button');button.type='button';button.className='btn';
+  button.disabled=busy;button.textContent=pathMode==='ending'?(i+1)+'. '+route.knot+' / '+route.kind+' ('+route.choices.length+' choices)':(i+1)+'. '+route.from+' → '+route.target+' / '+route.text;
+  button.onclick=async()=>{if(busy)return;const previous=history.slice(),seen=revision;history=route.choices.slice();const ok=await play();if(!ok&&seen===revision)history=previous;};return button;
+ }));
+}
+function setPathMode(mode){pathMode=mode;pathPage=0;pathCases=mode==='ending'?endingCases:branchCases;pathTotal=mode==='ending'?endingTotal:branchTotal;pathTruncated=mode==='ending'?endingTruncated:branchTruncated;$('paths-endings').setAttribute('aria-pressed',String(mode==='ending'));$('paths-branches').setAttribute('aria-pressed',String(mode==='branch'));showPaths();}
+$('paths-endings').onclick=()=>{if(!busy)setPathMode('ending');};
+$('paths-branches').onclick=()=>{if(!busy)setPathMode('branch');};
+$('paths-prev').onclick=()=>{if(busy||pathPage===0)return;pathPage--;showPaths();};
+$('paths-next').onclick=()=>{if(busy||(pathPage+1)*PATH_PAGE_SIZE>=pathCases.length)return;pathPage++;showPaths();};
+const controls=['project-file','load-file','sample','inspect','routes','preview','begin','reset'];
+function status(message,error=false){$('status').className='notice '+(error?'error':'ok');$('status').textContent=message;}
+function busyState(active){busy=active;for(const id of controls)$(id).disabled=active;for(const choice of $('choices').children)choice.disabled=active;for(const path of $('paths').children)path.disabled=active;$('paths-endings').disabled=active;$('paths-branches').disabled=active;$('paths-prev').disabled=active||pathPage===0;$('paths-next').disabled=active||(pathPage+1)*PATH_PAGE_SIZE>=pathCases.length;if(!active)$('reset').disabled=history.length===0;}
+function wipe(){history=[];pathCases=[];endingCases=[];branchCases=[];endingTotal=0;branchTotal=0;endingTruncated=false;branchTruncated=false;pathPage=0;pathTotal=0;pathTruncated=false;pathMode='ending';$('paths-endings').setAttribute('aria-pressed','true');$('paths-branches').setAttribute('aria-pressed','false');$('paths-summary').textContent='No routes mapped.';$('paths-prev').disabled=true;$('paths-next').disabled=true;$('metrics').replaceChildren();$('raw').textContent='No analysis yet.';$('readout').textContent='Not started';$('scene').replaceChildren();const p=document.createElement('p');p.textContent='Press Begin story to follow this path.';$('scene').append(p);$('choices').replaceChildren();$('trace').replaceChildren();$('paths').replaceChildren();$('reset').disabled=true;}
+function changed(){revision++;wipe();status('Story changed. Begin a new traversal.');}
+function metrics(rows){$('metrics').replaceChildren(...rows.map(([name,n])=>{const b=document.createElement('span');b.className='metric';const strong=document.createElement('strong');strong.textContent=String(n);b.append(strong,document.createTextNode(' '+name));return b;}));}
+async function invoke(name,args,render){if(busy)return;const seen=revision;busyState(true);status('Running '+name+'…');try{const r=await studioPlugin.call('action',name,args);if(revision!==seen)return;render(r);if(r?.ok===false)status((r.errors||['Invalid story']).join('; '),true);else status('Analysis complete.');}catch(e){if(revision===seen)status(e.message||String(e),true);}finally{busyState(false);}}
+$('load-file').onclick=async()=>{if(busy)return;const seen=revision;busyState(true);status('Reading bound game JSON…');try{const r=await studioPlugin.call('action','load',{file:$('project-file').value});if(seen!==revision)return;if(typeof r.story!=='string')throw new Error('Game file load did not return story text');$('story').value=r.story;changed();status('Loaded '+r.file+' into the editor. No game files changed.');}catch(e){if(seen===revision)status(e.message||String(e),true);}finally{busyState(false);}};
+$('sample').onclick=()=>{$('story').value=JSON.stringify(sample,null,2);changed();};
+$('story').addEventListener('input',changed);
+$('inspect').onclick=()=>invoke('inspect',{story:$('story').value},r=>{metrics([['knots',r.metrics?.totalKnots??0],['choices',r.metrics?.choiceCount??0],['unreachable',r.unreachable?.length??0]]);$('raw').textContent=JSON.stringify(r,null,2);});
+$('routes').onclick=()=>invoke('routes',{story:$('story').value},r=>{metrics([['reachable knots',r.coverage.reachableKnots],['planned choices',r.coverage.plannedChoices],['trapped knots',r.trapKnots.length]]);$('raw').textContent=JSON.stringify(r,null,2);endingCases=r.terminalRoutes;branchCases=r.testCases;endingTotal=r.terminalRouteCount;branchTotal=r.coverage.reachableChoices;endingTruncated=r.terminalRoutesTruncated;branchTruncated=r.coverage.truncated;setPathMode(endingCases.length||!branchCases.length?'ending':'branch');});
+$('preview').onclick=()=>invoke('preview',{story:$('story').value},r=>{metrics([['knots',r.metrics.totalKnots],['choices',r.metrics.choiceCount]]);$('raw').textContent=r.ink;});
+async function play(){const seen=revision;busyState(true);status('Traversing story…');try{const r=await studioPlugin.call('action','simulate',{story:$('story').value,choices:JSON.stringify(history)});if(seen!==revision)return false;const last=r.visited.at(-1);$('readout').textContent=r.finished?'END':r.waitingAt;$('scene').replaceChildren(...(last?.paragraphs||[]).map(s=>{const p=document.createElement('p');p.textContent=s;return p;}));$('choices').replaceChildren();if(r.finished){const p=document.createElement('p');p.textContent='This route ends here.';$('scene').append(p);}else for(const [i,option] of r.options.entries()){const button=document.createElement('button');button.className='btn';button.type='button';button.dataset.choice=String(i);button.textContent=(i+1)+'. '+option.text;button.onclick=async()=>{if(busy)return;const previous=history.slice(),seen=revision;history.push(i);const ok=await play();if(!ok&&seen===revision)history=previous;};$('choices').append(button);}const route=r.visited.filter(e=>e.chosen).map(e=>e.knot+' → '+e.chosen);$('trace').replaceChildren(...(route.length?route:['No choices made.']).map(s=>{const li=document.createElement('li');li.textContent=s;return li;}));status(r.finished?'Story route completed.':'Choose a route to continue.');return true;}catch(e){if(seen===revision)status(e.message||String(e),true);return false;}finally{busyState(false);}}
+async function restart(){if(busy)return;const previous=history.slice(),seen=revision;history=[];const ok=await play();if(!ok&&seen===revision)history=previous;}
+$('begin').onclick=restart;
+$('reset').onclick=restart;
+$('story').value=JSON.stringify(sample,null,2);wipe();
+})();
+</script></body></html>

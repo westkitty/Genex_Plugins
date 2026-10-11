@@ -1,0 +1,140 @@
+{
+  "apiVersion": 3,
+  "id": "spector-frame-inspector",
+  "version": "0.9.1",
+  "name": "Spector Frame Inspector",
+  "publisher": "Stinky Weasel Productions",
+  "description": "GENEX-owned MCP bridge to the official Spector.js WebGL debugger server built and installed locally. Localhost-first frame forensics.",
+  "backend": "backend.mjs",
+  "capabilities": [
+    "settings",
+    "network"
+  ],
+  "network": {
+    "hosts": [
+      "localhost",
+      "127.0.0.1"
+    ]
+  },
+  "tools": [
+    {
+      "name": "status",
+      "description": "Inspect configured upstream entry path and SHA-256 lock. Does not start a browser or prove the MCP server is ready.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "probe",
+      "description": "Launch the exact SHA-256-reviewed upstream through the existing MCP proxy, complete a bounded MCP initialize/tools-list handshake, and report actual discovered tool availability. No website navigation; not gameplay proof.",
+      "confirmation": "Start the locally configured upstream MCP server for a 12-second handshake check? This executes trusted local Node code and may start a browser service.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "webgl-frame-forensics",
+      "summary": "Use official Spector.js MCP frame capture to inspect local WebGL games; read setup, supported captures and limitations before agent use.",
+      "file": "skills/webgl-frame-forensics.md"
+    }
+  ],
+  "settings": [
+    {
+      "key": "upstream-path",
+      "label": "Absolute local Spector.js mcp/dist/index.js path",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "upstream-sha256",
+      "label": "Reviewed upstream entry script SHA-256 (64 hex characters)",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "allowed-origin",
+      "label": "Exact local game origin (scheme, host, port)",
+      "type": "string",
+      "default": "http://127.0.0.1:5173"
+    }
+  ],
+  "actions": [
+    {
+      "name": "probe",
+      "label": "Test MCP connection",
+      "confirmation": "Start the locally configured Spector MCP server to test its protocol and tools? It executes native local code."
+    },
+    {
+      "name": "status",
+      "label": "Verify local entry"
+    }
+  ],
+  "panels": [
+    {
+      "id": "setup",
+      "title": "WebGL Capture Console",
+      "file": "panel.html",
+      "placement": "settings"
+    }
+  ],
+  "mcpServers": [
+    {
+      "id": "spector",
+      "transport": "stdio",
+      "command": "node",
+      "args": [
+        "proxy.mjs"
+      ],
+      "cwd": "storage:project",
+      "env": {
+        "GENEX_UPSTREAM_PATH": "setting:upstream-path",
+        "GENEX_UPSTREAM_SHA256": "setting:upstream-sha256",
+        "GENEX_ALLOWED_ORIGIN": "setting:allowed-origin"
+      },
+      "requires": {
+        "settings": [
+          "upstream-path",
+          "upstream-sha256",
+          "allowed-origin"
+        ]
+      },
+      "toolPolicy": {
+        "allow": [
+          "load_url",
+          "take_screenshot",
+          "list_canvases",
+          "select_canvas",
+          "capture_frame",
+          "get_draw_calls",
+          "get_command_details",
+          "get_shaders",
+          "get_textures",
+          "get_webgl_state",
+          "get_context_info",
+          "get_console_logs"
+        ]
+      },
+      "maxTools": 12,
+      "callTimeoutMs": 120000,
+      "description": "Runs the local built Spector.js MCP server inside Node. Direct load_url calls must match the configured game origin, but browser page requests/redirects are not a complete sandbox. Requires separately building BabylonJS/Spector.js/mcp, installing its browser dependency and setting an absolute dist/index.js path. The entry script must match the configured SHA-256 digest. This does not pin transitive npm dependencies."
+    }
+  ],
+  "toolbar": [
+    {
+      "id": "qa",
+      "label": "WebGL QA",
+      "ariaLabel": "Check Spector MCP connection",
+      "icon": "box",
+      "requiresProject": false,
+      "target": {
+        "kind": "action",
+        "name": "probe"
+      }
+    }
+  ],
+  "icon": "icon.svg"
+}

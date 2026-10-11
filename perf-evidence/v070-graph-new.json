@@ -1,0 +1,42 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "redacted: isolated baseline/release under same runtime",
+  "measurements": {
+    "Ink routes 16x4": {
+      "median_ms": 0.124,
+      "p95_ms": 0.281,
+      "total_ms": 29.107,
+      "runs": 200,
+      "heap_delta_bytes": -970760
+    },
+    "Ink routes 80x12": {
+      "median_ms": 0.977,
+      "p95_ms": 1.483,
+      "total_ms": 125.559,
+      "runs": 120,
+      "heap_delta_bytes": -1862688
+    },
+    "Ink inspect 80x12": {
+      "median_ms": 0.536,
+      "p95_ms": 1.009,
+      "total_ms": 73.174,
+      "runs": 120,
+      "heap_delta_bytes": 4023832
+    },
+    "XState plan 64x8": {
+      "median_ms": 0.43,
+      "p95_ms": 0.721,
+      "total_ms": 66.584,
+      "runs": 120,
+      "heap_delta_bytes": -717304
+    },
+    "XState simulate 500": {
+      "median_ms": 0.559,
+      "p95_ms": 0.747,
+      "total_ms": 70.224,
+      "runs": 120,
+      "heap_delta_bytes": 7008152
+    }
+  }
+}

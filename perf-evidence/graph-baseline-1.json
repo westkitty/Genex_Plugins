@@ -1,0 +1,42 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "/mnt/data/genex-v040-work/GENEX-four-plugins",
+  "measurements": {
+    "Ink routes 16x4": {
+      "median_ms": 0.13,
+      "p95_ms": 0.49,
+      "total_ms": 35.507,
+      "runs": 200,
+      "heap_delta_bytes": -940840
+    },
+    "Ink routes 80x12": {
+      "median_ms": 1.065,
+      "p95_ms": 1.683,
+      "total_ms": 142.144,
+      "runs": 120,
+      "heap_delta_bytes": 6020968
+    },
+    "Ink inspect 80x12": {
+      "median_ms": 0.495,
+      "p95_ms": 2.985,
+      "total_ms": 107.453,
+      "runs": 120,
+      "heap_delta_bytes": 3995688
+    },
+    "XState plan 64x8": {
+      "median_ms": 0.45,
+      "p95_ms": 0.825,
+      "total_ms": 62.829,
+      "runs": 120,
+      "heap_delta_bytes": 434656
+    },
+    "XState simulate 500": {
+      "median_ms": 0.59,
+      "p95_ms": 0.874,
+      "total_ms": 77.34,
+      "runs": 120,
+      "heap_delta_bytes": 6926616
+    }
+  }
+}

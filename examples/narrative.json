@@ -1,0 +1,28 @@
+{
+  "title": "The Missing Signal",
+  "start": "arrival",
+  "knots": [
+    {
+      "id": "arrival",
+      "paragraphs": ["A silent station waits beyond the airlock.", "The emergency channel flickers without a voice."],
+      "choices": [
+        { "text": "Follow the signal", "target": "relay" },
+        { "text": "Leave the station", "target": "END" }
+      ]
+    },
+    {
+      "id": "relay",
+      "paragraphs": ["The signal stops the moment you enter the room."],
+      "choices": [
+        { "text": "Inspect the recorder", "target": "recorder" },
+        { "text": "Return to the airlock", "target": "arrival" }
+      ]
+    },
+    {
+      "id": "recorder",
+      "paragraphs": ["There are no surviving messages, only timestamps."],
+      "choices": []
+    }
+  ],
+  "variables": {}
+}

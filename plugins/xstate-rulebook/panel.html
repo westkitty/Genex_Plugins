@@ -1,0 +1,142 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rulebook | Game state lab</title><style>
+:root{color-scheme:dark;--ink:#e8edf2;--muted:#9ca9b9;--canvas:#0b1016;--panel:#151b24;--line:#313b49;--accent:#ef705e;--cool:#90d5d4;--good:#a4dfa9;--bad:#ffc1a9}
+*{box-sizing:border-box}html{font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;font-size:15px;line-height:1.5}body{margin:0;background:var(--canvas);color:var(--ink);min-width:270px}
+main{max-width:1160px;margin:auto;padding:clamp(14px,3vw,32px)}.eyebrow{font-size:.7rem;font-weight:800;letter-spacing:.19em;text-transform:uppercase;color:var(--accent)}h1{font-size:clamp(1.4rem,3.6vw,2.2rem);letter-spacing:-.035em;line-height:1.12;margin:.35rem 0 .8rem}h2{font-size:1rem;letter-spacing:.02em;margin:0 0 12px}.sub{color:var(--muted);font-size:.86rem;max-width:65ch;margin:0 0 22px}.columns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:16px}.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:clamp(12px,2.3vw,22px);min-width:0}.stack{display:grid;gap:13px}.actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px}.btn{font:inherit;border:1px solid #637187;border-radius:6px;padding:11px 14px;min-height:44px;background:#273240;color:var(--ink);font-weight:650;cursor:pointer}.btn.primary{background:var(--accent);border-color:var(--accent);color:#1d1011}.btn:disabled{opacity:.55;cursor:wait}.btn:hover:not(:disabled){filter:brightness(1.15)}.btn:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--cool);outline-offset:3px}.btn.ghost{background:transparent;border-color:var(--line);font-weight:500}textarea{width:100%;min-height:240px;resize:vertical;color:#dfe9ea;background:#0d131b;border:1px solid #46556a;border-radius:8px;padding:13px;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace;tab-size:2}select{background:#111923;color:var(--ink);padding:12px;border:1px solid #66758a;border-radius:6px;min-height:44px;min-width:125px}.notice{padding:10px 13px;border:1px solid var(--line);border-left:3px solid var(--cool);background:#0f1c24;border-radius:4px;color:#cbdadf;font-size:.85rem}.notice.error{border-left-color:#ff9f85;background:#311a1b;color:#ffd1c0}.notice.ok{border-left-color:var(--good)}.metrics{display:flex;flex-wrap:wrap;gap:8px}.metric{padding:6px 10px;border:1px solid #4b596a;border-radius:5px;color:var(--muted);font:12px ui-monospace,monospace}.metric strong{color:var(--ink);font-weight:700}.nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,170px),1fr));gap:9px}.node{padding:12px;border:1px solid #435062;border-radius:8px;background:#101720;overflow-wrap:anywhere}.node strong{color:var(--ink);font-size:.9rem}.node small{display:block;color:var(--muted);font-size:.75rem;margin-top:4px}.node.current{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent)}.node.unreachable{border-style:dashed;opacity:.64}.node.final{border-color:#477d71}.node.dead{border-color:#b17c63}.readout{font:700 clamp(1.3rem,2.4vw,2.1rem)/1.2 ui-monospace,monospace;color:var(--cool);overflow-wrap:anywhere}.trace{list-style:none;padding:0;margin:0;display:grid;gap:6px}.trace li{padding:8px 10px;border-left:2px solid #526174;background:#101720;font:12px/1.5 ui-monospace,monospace;overflow-wrap:anywhere}.story{padding:15px;border:1px solid #3d4a56;border-radius:9px;background:#101821}.story p{line-height:1.65}.choices{display:grid;gap:8px}.choices button{text-align:left}.foot{border-top:1px solid var(--line);margin-top:20px;padding-top:13px;color:var(--muted);font-size:.78rem}details{border:1px solid var(--line);border-radius:6px}summary{padding:9px 11px;cursor:pointer;color:#becfda}pre{max-height:380px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;margin:0;padding:12px;background:#080d12;font:12px/1.5 ui-monospace,monospace}label{font-size:.87rem;font-weight:650;color:#cdd9e4;display:block;margin-bottom:8px}button[data-choice]{width:100%}.small{font-size:.81rem;color:var(--muted)}
+@media(max-width:720px){.columns{grid-template-columns:1fr}.panel{padding:14px}textarea{min-height:210px}.actions>.btn{flex:1 1 auto}h1{max-width:22ch}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
+.project-load{padding:12px;background:#101720;border:1px solid var(--line);border-radius:8px}.project-load label{margin:0 0 7px}.project-load input{font:13px ui-monospace,monospace;min-width:0;flex:1 1 180px;min-height:44px;padding:10px;color:var(--ink);background:#0d131b;border:1px solid #66758a;border-radius:6px}.project-load input:focus-visible{outline:3px solid var(--cool);outline-offset:2px}
+
+</style></head><body><main>
+<header><div class="eyebrow">XSTATE RULEBOOK / GAME LOGIC</div><h1>State transition lab</h1><p class="sub">Trace what a game is allowed to do. Inspect a bounded finite-state model, replay events, and uncover transitions your tests have not reached.</p></header>
+<div class="columns"><section class="panel stack" aria-labelledby="input-title"><div><h2 id="input-title">01 / Machine specification</h2><label for="spec">Machine JSON</label><textarea id="spec" spellcheck="false" aria-describedby="source-hint"></textarea><div class="small" id="source-hint">Read-only analysis. Saving a generated module remains a separate confirmation-gated agent tool.</div></div><div class="project-load"><label for="project-file">Load existing JSON from the bound game (replaces unsaved editor text, never writes game files)</label><div class="actions"><input id="project-file" type="text" autocomplete="off" spellcheck="false" placeholder="game-states.json" aria-label="Root-level game JSON filename"><button class="btn ghost" id="load-file" type="button">Load from game</button></div></div><div class="actions"><button class="btn ghost" id="sample" type="button">Load example</button><button class="btn primary" id="inspect" type="button">Inspect machine</button><button class="btn" id="plan" type="button">Generate test paths</button></div><div id="status" class="notice" role="status" aria-live="polite">Ready to inspect.</div><details><summary>Raw analysis and path data</summary><pre id="raw" aria-label="Machine result JSON">No analysis yet.</pre></details></section>
+<section class="panel stack" aria-labelledby="runtime-title"><div><h2 id="runtime-title">02 / Interactive event trace</h2><div class="small">The replay uses the plugin's deterministic simulator, not a running game's XState runtime.</div></div><div class="metrics" id="metrics" aria-label="Machine metrics"></div><div class="readout" id="readout" aria-live="polite">Not started</div><div class="actions"><label for="events" style="margin:0">Event</label><select id="events" aria-label="Next event"><option value="">Inspect first</option></select><button class="btn primary" id="advance" type="button" disabled>Send event</button><button class="btn ghost" id="reset" type="button" disabled>Reset trace</button></div><h2>State map</h2><div id="nodes" class="nodes" aria-label="Reachable states and transitions"><div class="small">Inspect a machine to reveal its states.</div></div><h2>Events observed</h2><ol id="trace" class="trace" aria-live="polite"><li>No events replayed.</li></ol><h2>03 / Replay a test path</h2><div class="actions" role="group" aria-label="Browse machine test cases"><button class="btn ghost" type="button" id="paths-prev" disabled>Previous 12</button><span class="small" id="paths-summary" role="status" aria-live="polite">No test paths mapped.</span><button class="btn ghost" type="button" id="paths-next" disabled>Next 12</button></div><div id="paths" class="choices" aria-label="Generated machine test paths"></div></section></div>
+<footer class="foot">Scope: flat deterministic machines only. Guards, parallel states, activities, side effects and persistence must be implemented and tested in the game's actual runtime.</footer></main>
+<script>
+const waiting = new Map();
+const contextListeners = new Set();
+let seq = 0;
+window.addEventListener("message", (event) => {
+  if (event.source !== parent) return;
+  if (event.data?.type === "studio-plugin-context-changed") {
+    for (const listener of contextListeners) {
+      try {
+        listener();
+      } catch {}
+    }
+    return;
+  }
+  if (event.data?.type !== "studio-plugin-result") return;
+  const p = waiting.get(event.data.id);
+  if (!p) return;
+  waiting.delete(event.data.id);
+  clearTimeout(p.timer);
+  event.data.error ? p.reject(new Error(event.data.error)) : p.resolve(event.data.result);
+});
+window.studioPlugin = {
+  onContextChanged(callback) {
+    contextListeners.add(callback);
+    return () => contextListeners.delete(callback);
+  },
+  call(method, name, args, options) {
+    // A long setup action may extend its local wait; host validation, confirmations and
+    // execution deadlines still apply. Timing out never means a remote job was cancelled.
+    const timeoutMs = options?.timeoutMs ?? 60000;
+    if (!Number.isInteger(timeoutMs) || timeoutMs < 1000 || timeoutMs > 1800000)
+      return Promise.reject(new Error("Invalid panel wait duration"));
+    const id = String(++seq);
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(() => {
+        waiting.delete(id);
+        reject(new Error("Studio request timed out. Inspect its status before retrying."));
+      }, timeoutMs);
+      waiting.set(id, { resolve, reject, timer });
+      parent.postMessage({ type: "studio-plugin-request", id, method, name, args }, "*");
+    });
+  },
+};
+window.addEventListener("pagehide", () => {
+  for (const p of waiting.values()) {
+    clearTimeout(p.timer);
+    p.reject(new Error("Panel closed"));
+  }
+  waiting.clear();
+});
+
+/** Small framework-free SDK primitives; custom panels can also use their own framework. */
+window.studioPlugin.ui = {
+  text(tag, value) {
+    const el = document.createElement(tag);
+    el.textContent = String(value ?? "Unknown");
+    return el;
+  },
+  status(label, value) {
+    const row = document.createElement("p");
+    const title = document.createElement("strong");
+    title.textContent = label + ": ";
+    row.append(title, document.createTextNode(String(value ?? "Unknown")));
+    return row;
+  },
+  error(message) {
+    const el = document.createElement("p");
+    el.setAttribute("role", "alert");
+    el.textContent = String(message);
+    return el;
+  },
+  job(job) {
+    const card = document.createElement("article");
+    card.style.cssText = "border-top:1px solid #555;padding:12px 0";
+    card.append(
+      this.text("strong", job.operation ?? job.title ?? "Asset job"),
+      this.status("Status", job.status),
+      this.status("Use", job.use?.stage ?? "Not verified"),
+      this.status("Charged credits", job.creditsCharged ?? "Not reported"),
+      this.status("Refunded credits", job.creditsRefunded ?? "Not reported"),
+    );
+    if (job.generationId) card.append(this.status("Generation", job.generationId));
+    for (const file of job.files ?? []) card.append(this.text("div", file));
+    if (job.error) card.append(this.error(job.error));
+    return card;
+  },
+};
+
+</script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const sample={id:'sealed_gate',initial:'dormant',states:{dormant:{on:{WAKE:'watching'}},watching:{on:{SEAL:'sealed',RESET:'dormant'}},sealed:{type:'final'},forgotten:{}}};
+let history=[],revision=0,busy=false,currentSpec='',analysis=null,pathCases=[],pathPage=0,pathTotal=0,pathTruncated=false;
+const PATH_PAGE_SIZE=12;
+function showPaths(){
+ const count=pathCases.length,start=pathPage*PATH_PAGE_SIZE,end=Math.min(start+PATH_PAGE_SIZE,count);
+ $('paths-prev').disabled=busy||pathPage===0;$('paths-next').disabled=busy||end>=count;
+ $('paths-summary').textContent=count?`Showing ${start+1}–${end} of ${count} replayable transition paths${pathTruncated?' (first '+count+' of '+pathTotal+' transitions; plan truncated)':''}`:'No reachable transition paths.';
+ $('paths').replaceChildren(...pathCases.slice(start,end).map((test,j)=>{
+  const i=start+j,button=document.createElement('button');button.type='button';button.className='btn';
+  button.textContent=(i+1)+'. '+test.from+' / '+test.event+' → '+test.expectedState;button.disabled=busy||!analysis;
+  button.onclick=async()=>{if(busy||!analysis)return;const previous=history.slice(),seen=revision;history=[...test.events];busyState(true);const ok=await replay();if(!ok&&seen===revision)history=previous;busyState(false);if(ok)status('Replayed test path '+(i+1)+' of '+count+'.');};return button;
+ }));
+}
+$('paths-prev').onclick=()=>{if(busy||pathPage===0)return;pathPage--;showPaths();};
+$('paths-next').onclick=()=>{if(busy||(pathPage+1)*PATH_PAGE_SIZE>=pathCases.length)return;pathPage++;showPaths();};
+const controls=['project-file','load-file','sample','inspect','plan','advance','reset'];
+function busyState(active){busy=active;for(const id of controls)$(id).disabled=active;for(const path of $('paths').children)path.disabled=active||!analysis;$('paths-prev').disabled=active||pathPage===0;$('paths-next').disabled=active||(pathPage+1)*PATH_PAGE_SIZE>=pathCases.length;if(!active){$('advance').disabled=!analysis||!$('events').value;$('reset').disabled=!analysis;}}
+function status(message,error=false){$('status').textContent=message;$('status').className='notice '+(error?'error':'ok');}
+function wipe(){analysis=null;history=[];pathCases=[];pathPage=0;pathTotal=0;pathTruncated=false;$('paths-summary').textContent='No test paths mapped.';$('paths-prev').disabled=true;$('paths-next').disabled=true;$('metrics').replaceChildren();$('nodes').replaceChildren();$('trace').replaceChildren();$('paths').replaceChildren();$('readout').textContent='Not started';$('raw').textContent='No analysis yet.';$('events').replaceChildren(new Option('Inspect first',''));$('advance').disabled=true;$('reset').disabled=true;}
+function changed(){revision++;wipe();status('Specification changed. Inspect again to reset the trace.');}
+function renderMetrics(rows){$('metrics').replaceChildren(...rows.map(([title,value])=>{const el=document.createElement('span');el.className='metric';const strong=document.createElement('strong');strong.textContent=String(value);el.append(strong,document.createTextNode(' '+title));return el;}));}
+function renderNodes(selected){const data=analysis;if(!data)return;const bad=new Set(data.unreachable||[]);const f=new Set(data.finalStates||[]),dead=new Set(data.deadEnds||[]);$('nodes').replaceChildren(...data.states.map(s=>{const card=document.createElement('div');card.className='node'+(s===selected?' current':'')+(bad.has(s)?' unreachable':'')+(f.has(s)?' final':'')+(dead.has(s)?' dead':'');const title=document.createElement('strong');title.textContent=s;const edges=(data.transitions||[]).filter(t=>t.from===s).map(t=>t.event+' → '+t.to);const detail=document.createElement('small');detail.textContent=bad.has(s)?'Unreachable • '+(edges.join(' · ')||'no events'):(edges.length?edges.join(' · '):f.has(s)?'Final state':dead.has(s)?'Dead end — no outgoing events':'No outgoing events');card.append(title,detail);return card;}));}
+async function invoke(name,args,apply){if(busy)return;const seen=revision;busyState(true);status('Running '+name+'…');try{const value=await studioPlugin.call('action',name,args);if(seen!==revision)return;const applied=await apply(value);if(seen!==revision)return;if(applied===false){status('Initial replay failed. Inspect the source or simulation error.',true);return;}if(value?.ok===false)status((value.errors||['Invalid machine']).join('; '),true);else status(name==='inspect'?'Specification inspected.':'Analysis complete.');}catch(error){if(seen===revision)status(error.message||String(error),true);}finally{busyState(false);}}
+async function inspect(){const text=$('spec').value;return invoke('inspect',{spec:text},r=>{if(!r.ok){analysis=null;$('raw').textContent=JSON.stringify(r,null,2);return;}analysis=r;currentSpec=text;history=[];renderMetrics([['states',r.states.length],['transitions',r.transitions.length],['unreachable',r.unreachable.length],['dead ends',r.deadEnds.length]]);$('events').replaceChildren(...r.events.map(s=>new Option(s,s)));if(!r.events.length)$('events').append(new Option('No events',''));$('raw').textContent=JSON.stringify(r,null,2);return replay(true);});}
+async function replay(first=false){const text=first?currentSpec:$('spec').value;const seen=revision;try{const r=await studioPlugin.call('action','simulate',{spec:text,events:JSON.stringify(history)});if(seen!==revision)return false;$('readout').textContent=r.final+(r.done?' / final':'');renderNodes(r.final);$('trace').replaceChildren(...r.trace.map(t=>{const li=document.createElement('li');li.textContent=t.step===0?'0 / initial → '+t.state:t.step+' / '+t.event+' → '+t.state+(t.accepted?'':' (ignored)');return li;}));return true;}catch(error){if(seen===revision)status(error.message||String(error),true);return false;}}
+$('load-file').onclick=async()=>{if(busy)return;const seen=revision;busyState(true);status('Reading bound game JSON…');try{const r=await studioPlugin.call('action','load',{file:$('project-file').value});if(seen!==revision)return;if(typeof r.spec!=='string')throw new Error('Game file load did not return specification text');$('spec').value=r.spec;changed();status('Loaded '+r.file+' into the editor. No game files changed.');}catch(e){if(seen===revision)status(e.message||String(e),true);}finally{busyState(false);}};
+$('sample').onclick=()=>{$('spec').value=JSON.stringify(sample,null,2);changed();};
+$('spec').addEventListener('input',changed);
+$('inspect').onclick=()=>inspect();
+$('plan').onclick=()=>invoke('testplan',{spec:$('spec').value},r=>{const n=r.testCases.length;$('raw').textContent=JSON.stringify(r,null,2);renderMetrics([['test cases',n],['reachable transitions',r.reachableTransitions],['unreachable',r.unreachableTransitions.length]]);pathCases=r.testCases;pathTotal=r.reachableTransitions;pathTruncated=r.truncated;pathPage=0;showPaths();if(r.truncated)status('Plan truncated: '+n+' of '+r.reachableTransitions+' transitions supplied. Review raw analysis.');});
+$('advance').onclick=async()=>{if(busy||!analysis||!$('events').value)return;const event=$('events').value;history.push(event);busyState(true);status('Replaying '+event+'…');const ok=await replay();if(!ok)history.pop();busyState(false);if(ok)status('Event '+event+' recorded.');};
+$('reset').onclick=async()=>{if(busy||!analysis)return;const previous=history.slice(),seen=revision;history=[];busyState(true);const ok=await replay();if(!ok&&seen===revision)history=previous;busyState(false);if(ok)status('Trace reset.');};
+$('events').onchange=()=>{$('advance').disabled=busy||!analysis||!$('events').value;};
+$('spec').value=JSON.stringify(sample,null,2);wipe();
+})();
+</script></body></html>

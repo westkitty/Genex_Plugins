@@ -1,0 +1,59 @@
+{
+  "initial": "sealed",
+  "testCases": [
+    {
+      "from": "sealed",
+      "event": "UNLOCK",
+      "expectedState": "unlocked",
+      "events": [
+        "UNLOCK"
+      ]
+    },
+    {
+      "from": "unlocked",
+      "event": "OPEN",
+      "expectedState": "open",
+      "events": [
+        "UNLOCK",
+        "OPEN"
+      ]
+    },
+    {
+      "from": "unlocked",
+      "event": "RELOCK",
+      "expectedState": "sealed",
+      "events": [
+        "UNLOCK",
+        "RELOCK"
+      ]
+    },
+    {
+      "from": "open",
+      "event": "CLOSE",
+      "expectedState": "unlocked",
+      "events": [
+        "UNLOCK",
+        "OPEN",
+        "CLOSE"
+      ]
+    },
+    {
+      "from": "open",
+      "event": "ESCAPE",
+      "expectedState": "escaped",
+      "events": [
+        "UNLOCK",
+        "OPEN",
+        "ESCAPE"
+      ]
+    }
+  ],
+  "unreachableStates": [],
+  "unreachableTransitions": [],
+  "reachableTransitions": 5,
+  "totalTransitions": 5,
+  "coveredByPlan": 5,
+  "truncated": false,
+  "nonFinalDeadEnds": [],
+  "note": "Shortest unit-level event traces, not runtime/gameplay evidence. Verify with xstate@5 and game controls."
+}

@@ -1,0 +1,38 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "/mnt/data/genex-v090-audit/GENEX-four-plugins",
+  "mode": "playwright",
+  "measurements": {
+    "snapshot-256k": {
+      "payload_bytes": 262144,
+      "calls": 16,
+      "bytes_forwarded": 4194304,
+      "init_ms": 66.12,
+      "median_ms": 4.52,
+      "p95_ms": 7.21,
+      "total_call_ms": 77.5,
+      "peak_bridge_rss_bytes": 29720576
+    },
+    "snapshot-2m": {
+      "payload_bytes": 2097152,
+      "calls": 12,
+      "bytes_forwarded": 25165824,
+      "init_ms": 69.28,
+      "median_ms": 32.12,
+      "p95_ms": 41.88,
+      "total_call_ms": 382.35,
+      "peak_bridge_rss_bytes": 60641280
+    },
+    "snapshot-6m": {
+      "payload_bytes": 6291456,
+      "calls": 8,
+      "bytes_forwarded": 50331648,
+      "init_ms": 65.02,
+      "median_ms": 102.27,
+      "p95_ms": 120.66,
+      "total_call_ms": 789.18,
+      "peak_bridge_rss_bytes": 81117184
+    }
+  }
+}

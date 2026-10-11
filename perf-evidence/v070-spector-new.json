@@ -1,0 +1,38 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "redacted: isolated baseline/release under same runtime",
+  "mode": "spector",
+  "measurements": {
+    "snapshot-256k": {
+      "payload_bytes": 262144,
+      "calls": 16,
+      "bytes_forwarded": 4194304,
+      "init_ms": 53.2,
+      "median_ms": 3.41,
+      "p95_ms": 6.59,
+      "total_call_ms": 56.03,
+      "peak_bridge_rss_bytes": 32153600
+    },
+    "snapshot-2m": {
+      "payload_bytes": 2097152,
+      "calls": 12,
+      "bytes_forwarded": 25165824,
+      "init_ms": 67.92,
+      "median_ms": 21.28,
+      "p95_ms": 25.53,
+      "total_call_ms": 259.08,
+      "peak_bridge_rss_bytes": 60739584
+    },
+    "snapshot-6m": {
+      "payload_bytes": 6291456,
+      "calls": 8,
+      "bytes_forwarded": 50331648,
+      "init_ms": 48.33,
+      "median_ms": 59.33,
+      "p95_ms": 72.29,
+      "total_call_ms": 484.22,
+      "peak_bridge_rss_bytes": 79388672
+    }
+  }
+}

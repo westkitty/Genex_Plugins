@@ -1,0 +1,153 @@
+{
+  "apiVersion": 3,
+  "id": "playwright-game-tester",
+  "version": "0.9.1",
+  "name": "Playwright Game Tester",
+  "publisher": "Stinky Weasel Productions",
+  "description": "GENEX-owned, localhost-first MCP bridge to an existing locally installed Microsoft Playwright MCP executable. No auto-download.",
+  "backend": "backend.mjs",
+  "capabilities": [
+    "settings",
+    "network"
+  ],
+  "network": {
+    "hosts": [
+      "localhost",
+      "127.0.0.1"
+    ]
+  },
+  "tools": [
+    {
+      "name": "status",
+      "description": "Inspect configured upstream entry path and SHA-256 lock. Does not start a browser or prove the MCP server is ready.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "probe",
+      "description": "Launch the exact SHA-256-reviewed upstream through the existing MCP proxy, complete a bounded MCP initialize/tools-list handshake, and report actual discovered tool availability. No website navigation; not gameplay proof.",
+      "confirmation": "Start the locally configured upstream MCP server for a 12-second handshake check? This executes trusted local Node code and may start a browser service.",
+      "parameters": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "browser-game-testing",
+      "summary": "Use the Playwright MCP connector to test a locally hosted game; read for setup, permitted tools, localhost boundaries and evidence limitations.",
+      "file": "skills/browser-game-testing.md"
+    }
+  ],
+  "settings": [
+    {
+      "key": "upstream-path",
+      "label": "Absolute @playwright/mcp cli.js or reviewed playwright-mcp alias",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "upstream-sha256",
+      "label": "Reviewed upstream entry script SHA-256 (64 hex characters)",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "key": "allowed-origin",
+      "label": "Exact local game origin (scheme, host, port)",
+      "type": "string",
+      "default": "http://127.0.0.1:5173"
+    },
+    {
+      "key": "canvas-pointer-input",
+      "label": "Enable 3D canvas pointer input (opt-in; requires official Playwright MCP vision tools)",
+      "type": "boolean",
+      "default": false
+    }
+  ],
+  "actions": [
+    {
+      "name": "probe",
+      "label": "Test MCP connection",
+      "confirmation": "Start the locally configured Playwright MCP server to test its protocol and tools? It executes native local code."
+    },
+    {
+      "name": "status",
+      "label": "Verify local entry"
+    }
+  ],
+  "panels": [
+    {
+      "id": "setup",
+      "title": "Browser Test Console",
+      "file": "panel.html",
+      "placement": "settings"
+    }
+  ],
+  "mcpServers": [
+    {
+      "id": "web",
+      "transport": "stdio",
+      "command": "node",
+      "args": [
+        "proxy.mjs"
+      ],
+      "cwd": "storage:project",
+      "env": {
+        "GENEX_UPSTREAM_PATH": "setting:upstream-path",
+        "GENEX_UPSTREAM_SHA256": "setting:upstream-sha256",
+        "GENEX_ALLOWED_ORIGIN": "setting:allowed-origin",
+        "GENEX_CANVAS_POINTER_INPUT": "setting:canvas-pointer-input"
+      },
+      "requires": {
+        "settings": [
+          "upstream-path",
+          "upstream-sha256",
+          "allowed-origin"
+        ]
+      },
+      "toolPolicy": {
+        "allow": [
+          "browser_navigate",
+          "browser_snapshot",
+          "browser_click",
+          "browser_type",
+          "browser_press_key",
+          "browser_resize",
+          "browser_take_screenshot",
+          "browser_console_messages",
+          "browser_network_requests",
+          "browser_wait_for",
+          "browser_hover",
+          "browser_drag",
+          "browser_find",
+          "browser_fill_form",
+          "browser_select_option",
+          "browser_mouse_move_xy",
+          "browser_mouse_click_xy",
+          "browser_mouse_drag_xy"
+        ]
+      },
+      "maxTools": 18,
+      "callTimeoutMs": 120000,
+      "description": "Launches the reviewed local Playwright MCP in a temporary, isolated headless profile. Enables safe DOM inspection, form/drag/hover QA; coordinate-based game canvas mouse input is opt-in and requires Playwright MCP vision capability. No auto-install. Only direct navigations are origin checked; page links, redirects and resource requests are not a network sandbox. SHA-256 verifies the entry script only, not transitive npm dependencies."
+    }
+  ],
+  "toolbar": [
+    {
+      "id": "qa",
+      "label": "Browser QA",
+      "ariaLabel": "Check Playwright MCP connection",
+      "icon": "play",
+      "requiresProject": false,
+      "target": {
+        "kind": "action",
+        "name": "probe"
+      }
+    }
+  ],
+  "icon": "icon.svg"
+}

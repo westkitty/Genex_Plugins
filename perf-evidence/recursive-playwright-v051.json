@@ -1,0 +1,38 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "/mnt/data/genex-recursive-work/GENEX-four-plugins",
+  "mode": "playwright",
+  "measurements": {
+    "snapshot-256k": {
+      "payload_bytes": 262144,
+      "calls": 16,
+      "bytes_forwarded": 4194304,
+      "init_ms": 50.8,
+      "median_ms": 3.09,
+      "p95_ms": 5.71,
+      "total_call_ms": 52.88,
+      "peak_bridge_rss_bytes": 32993280
+    },
+    "snapshot-2m": {
+      "payload_bytes": 2097152,
+      "calls": 12,
+      "bytes_forwarded": 25165824,
+      "init_ms": 55.08,
+      "median_ms": 19.5,
+      "p95_ms": 25.27,
+      "total_call_ms": 247.48,
+      "peak_bridge_rss_bytes": 58707968
+    },
+    "snapshot-6m": {
+      "payload_bytes": 6291456,
+      "calls": 8,
+      "bytes_forwarded": 50331648,
+      "init_ms": 54.21,
+      "median_ms": 63.94,
+      "p95_ms": 72.01,
+      "total_call_ms": 503.4,
+      "peak_bridge_rss_bytes": 78770176
+    }
+  }
+}

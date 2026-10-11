@@ -1,0 +1,181 @@
+{
+  "apiVersion": 3,
+  "id": "ink-narrative",
+  "version": "0.9.1",
+  "name": "Ink Narrative Workshop",
+  "publisher": "Stinky Weasel Productions",
+  "description": "Validate and author a deliberately restricted plain-text branching Ink schema; compile existing Ink source with a separately configured compiler.",
+  "backend": "backend.mjs",
+  "capabilities": [
+    "settings",
+    "project.read",
+    "project.write"
+  ],
+  "tools": [
+    {
+      "name": "inspect",
+      "description": "Validate supported story fields; reject unsupported conditions and effects; report reachability, choices and declarations-only variables.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "string",
+            "description": "JSON story specification with {start,knots:[{id,paragraphs,choices}],variables?}."
+          }
+        },
+        "required": [
+          "story"
+        ]
+      }
+    },
+    {
+      "name": "preview",
+      "description": "Preview generated Ink source, reachability and metrics without modifying the game; plain text only.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "story"
+        ]
+      }
+    },
+    {
+      "name": "simulate",
+      "description": "Walk a structured Ink narrative through JSON array of 0-based choice indexes (bounded, deterministic).",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "string"
+          },
+          "choices": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "story",
+          "choices"
+        ]
+      }
+    },
+    {
+      "name": "routes",
+      "description": "Return shortest reproducible choice-index traces for reachable branches and endings, unreachable knots, cycles, traps and route-coverage counts.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "string",
+            "description": "Restricted JSON story specification."
+          }
+        },
+        "required": [
+          "story"
+        ]
+      }
+    },
+    {
+      "name": "write",
+      "description": "Write a NEW genex-ink-<slug>.generated.ink source at the bound game's root; refuses to overwrite existing files.",
+      "confirmation": "Create a new Ink narrative source at the game root? This is a project write; existing files are protected.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "story": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "story",
+          "slug"
+        ]
+      }
+    },
+    {
+      "name": "compile",
+      "description": "Compile root-level Ink source with locally configured inklecate; reject INCLUDE/EXTERNAL; refuse stale source and require confirmation before writing output.",
+      "confirmation": "Run the configured local inklecate compiler on a game Ink file and write a compiled JSON artifact? If overwrite=true, an existing .ink.json is replaced.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Root-level .ink filename (no directories)."
+          },
+          "overwrite": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "source"
+        ]
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "branching-narrative",
+      "summary": "Use this for choice-driven story knots and persistent Ink-compatible narratives; read the plugin workflow and compiler prerequisites first.",
+      "file": "skills/branching-narrative.md"
+    }
+  ],
+  "settings": [
+    {
+      "key": "inklecate-path",
+      "label": "Absolute inklecate compiler path (optional)",
+      "type": "string",
+      "default": ""
+    }
+  ],
+  "actions": [
+    {
+      "name": "load",
+      "label": "Load game JSON (read only)"
+    },
+    {
+      "name": "inspect",
+      "label": "Inspect story"
+    },
+    {
+      "name": "simulate",
+      "label": "Traverse story"
+    },
+    {
+      "name": "routes",
+      "label": "Map story routes"
+    },
+    {
+      "name": "preview",
+      "label": "Preview Ink source"
+    }
+  ],
+  "panels": [
+    {
+      "id": "lab",
+      "title": "Narrative Lab",
+      "file": "panel.html",
+      "placement": "project"
+    }
+  ],
+  "icon": "icon.svg",
+  "toolbar": [
+    {
+      "id": "lab",
+      "label": "Narrative Lab",
+      "ariaLabel": "Open Ink Narrative Lab",
+      "icon": "play",
+      "requiresProject": true,
+      "target": {
+        "kind": "panel",
+        "id": "lab"
+      }
+    }
+  ]
+}

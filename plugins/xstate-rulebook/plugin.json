@@ -1,0 +1,136 @@
+{
+  "apiVersion": 3,
+  "id": "xstate-rulebook",
+  "version": "0.9.1",
+  "name": "XState Rulebook",
+  "publisher": "Stinky Weasel Productions",
+  "description": "Strict flat XState v5 machine validation, deterministic event simulation with transition coverage, and confirmation-gated game module generation.",
+  "backend": "backend.mjs",
+  "capabilities": [
+    "project.read",
+    "project.write"
+  ],
+  "tools": [
+    {
+      "name": "inspect",
+      "description": "Validate a flat FSM JSON spec and report invalid unsupported properties, reachability, dead ends and transition inventory.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string",
+            "description": "JSON: {id,initial,states:{state:{on:{EVENT:target},type?:final}}}."
+          }
+        },
+        "required": [
+          "spec"
+        ]
+      }
+    },
+    {
+      "name": "simulate",
+      "description": "Simulate 0-500 events and report accepted transitions, final state, visited states and transition coverage.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string"
+          },
+          "events": {
+            "type": "string",
+            "description": "JSON string array of event names."
+          }
+        },
+        "required": [
+          "spec",
+          "events"
+        ]
+      }
+    },
+    {
+      "name": "testplan",
+      "description": "Generate shortest event sequences covering each reachable FSM transition, with unreachable edges and plan limits.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string",
+            "description": "Restricted JSON finite-state machine specification."
+          }
+        },
+        "required": [
+          "spec"
+        ]
+      }
+    },
+    {
+      "name": "emit",
+      "description": "Create a NEW, root-level genex-xstate-<slug>.generated.mjs module importing createMachine from XState v5; refuses overwrites and requires explicit consent.",
+      "confirmation": "Create a new generated XState module in the current game's root? The plugin refuses existing files and does not install dependencies.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "spec": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Lowercase slug of 1-40 letters, digits or hyphens."
+          }
+        },
+        "required": [
+          "spec",
+          "slug"
+        ]
+      }
+    }
+  ],
+  "skills": [
+    {
+      "name": "game-state-machines",
+      "summary": "Use this when gameplay behavior needs explicit states, event transitions and deterministic trace tests; read before calling XState Rulebook tools.",
+      "file": "skills/game-state-machines.md"
+    }
+  ],
+  "settings": [],
+  "actions": [
+    {
+      "name": "load",
+      "label": "Load game JSON (read only)"
+    },
+    {
+      "name": "inspect",
+      "label": "Inspect machine"
+    },
+    {
+      "name": "simulate",
+      "label": "Replay machine"
+    },
+    {
+      "name": "testplan",
+      "label": "Map transition paths"
+    }
+  ],
+  "panels": [
+    {
+      "id": "lab",
+      "title": "State Transition Lab",
+      "file": "panel.html",
+      "placement": "project"
+    }
+  ],
+  "icon": "icon.svg",
+  "toolbar": [
+    {
+      "id": "lab",
+      "label": "State Lab",
+      "ariaLabel": "Open XState State Lab",
+      "icon": "boxes",
+      "requiresProject": true,
+      "target": {
+        "kind": "panel",
+        "id": "lab"
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "node": "v22.16.0",
+  "platform": "linux",
+  "root": "redacted: isolated baseline/release under same runtime",
+  "mode": "playwright",
+  "measurements": {
+    "snapshot-256k": {
+      "payload_bytes": 262144,
+      "calls": 16,
+      "bytes_forwarded": 4194304,
+      "init_ms": 48.47,
+      "median_ms": 2.99,
+      "p95_ms": 4.88,
+      "total_call_ms": 50.75,
+      "peak_bridge_rss_bytes": 32665600
+    },
+    "snapshot-2m": {
+      "payload_bytes": 2097152,
+      "calls": 12,
+      "bytes_forwarded": 25165824,
+      "init_ms": 49.83,
+      "median_ms": 20.8,
+      "p95_ms": 25.23,
+      "total_call_ms": 248.83,
+      "peak_bridge_rss_bytes": 60768256
+    },
+    "snapshot-6m": {
+      "payload_bytes": 6291456,
+      "calls": 8,
+      "bytes_forwarded": 50331648,
+      "init_ms": 47.37,
+      "median_ms": 60.82,
+      "p95_ms": 72,
+      "total_call_ms": 494.22,
+      "peak_bridge_rss_bytes": 81244160
+    }
+  }
+}

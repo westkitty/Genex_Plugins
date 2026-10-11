@@ -1,0 +1,10 @@
+{
+  "id": "stationDoor",
+  "initial": "sealed",
+  "states": {
+    "sealed": { "on": { "UNLOCK": "unlocked" } },
+    "unlocked": { "on": { "OPEN": "open", "RELOCK": "sealed" } },
+    "open": { "on": { "CLOSE": "unlocked", "ESCAPE": "escaped" } },
+    "escaped": { "type": "final" }
+  }
+}

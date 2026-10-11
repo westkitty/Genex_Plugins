@@ -1,0 +1,33 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>__PANEL_TITLE__</title><style>
+<!-- STUDIO_PANEL_CSS -->
+</style></head><body><main>
+<header><div class="eyebrow">__PANEL_CATEGORY__ / LOCAL CONNECTOR</div><h1>__PANEL_TITLE__</h1><p class="sub">__PANEL_DESCRIPTION__</p></header>
+<div class="columns"><section class="panel stack" aria-labelledby="config-title"><h2 id="config-title">01 / Configuration</h2><p class="small">Settings belong to GENEX. This panel only reads them; it never downloads, installs, or edits executable files.</p>
+<div class="node"><strong>Upstream entry</strong><small id="upstream" style="word-break:break-all">Reading settings…</small></div>
+<div class="node"><strong>Reviewed SHA-256</strong><small id="digest" style="word-break:break-all">Reading settings…</small></div>
+<div class="node"><strong>Allowed direct navigation origin</strong><small id="origin">Reading settings…</small></div>
+<!-- OPTIONAL_CANVAS_SETTING -->
+<div class="actions"><button class="btn ghost" id="refresh" type="button">Refresh settings</button><button class="btn" id="verify" type="button">Verify entry</button></div>
+<div id="entry-status" class="notice" role="status" aria-live="polite">No entry check yet.</div></section>
+<section class="panel stack" aria-labelledby="probe-title"><h2 id="probe-title">02 / Protocol readiness</h2><p class="small">The handshake checks the configured server and discovers tools. It does not navigate to a game, capture a frame, or prove gameplay behavior.</p>
+<div class="actions"><button class="btn primary" id="probe" type="button">Test MCP handshake</button></div>
+<div class="readout" id="readout" aria-live="polite">Not tested</div>
+<div class="metrics" id="metrics" aria-label="MCP protocol diagnostics"></div>
+<div id="probe-status" class="notice" role="status" aria-live="polite">A native GENEX confirmation dialog is required before launching the configured server.</div>
+<details><summary>Discovered tools and raw evidence</summary><pre id="raw" aria-label="MCP connection diagnostics">No protocol evidence yet.</pre></details></section></div>
+<footer class="foot">__PANEL_LIMIT__</footer></main>
+<!-- STUDIO_PANEL_SDK -->
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+let busy=false,revision=0;
+function status(id,text,error=false){$(id).textContent=text;$(id).className='notice '+(error?'error':'ok');}
+function busyState(value){busy=value;for(const id of ['refresh','verify','probe'])$(id).disabled=value;}
+function metrics(rows){$('metrics').replaceChildren(...rows.map(([label,value])=>{const el=document.createElement('span');el.className='metric';const n=document.createElement('strong');n.textContent=String(value);el.append(n,document.createTextNode(' '+label));return el;}));}
+async function settings(){if(busy)return;const seen=++revision;busyState(true);try{const data=await studioPlugin.call('settings');if(seen!==revision)return;$('upstream').textContent=data['upstream-path']||'Not configured';$('digest').textContent=data['upstream-sha256']||'Not configured';$('origin').textContent=data['allowed-origin']||'Not configured';<!-- OPTIONAL_CANVAS_CODE -->status('entry-status','Settings loaded. Verify the entry before testing MCP.');}catch(e){if(seen===revision)status('entry-status',e.message||String(e),true);}finally{busyState(false);}}
+async function action(name){if(busy)return;const seen=++revision;busyState(true);status(name==='probe'?'probe-status':'entry-status',name==='probe'?'Waiting for GENEX approval and MCP handshake…':'Inspecting reviewed upstream path…');try{const r=await studioPlugin.call('action',name,{},name==='probe'?{timeoutMs:20000}:undefined);if(seen!==revision)return;if(name==='status'){status('entry-status',r.reason||'Status unknown',!!(!r.fileFound||!r.hashMatched));if(r.detectedSha256)$('digest').textContent=r.detectedSha256+(r.hashMatched?' (reviewed digest matches)':' (unreviewed; do not approve without source review)');}else{const okay=r.handshake===true&&r.ready===true;$('readout').textContent=okay?'Protocol ready':'Setup incomplete';metrics([['tools discovered',r.exposedCount??0],['pages',r.pages??0],['missing',r.missingTools?.length??0]]);$('raw').textContent=JSON.stringify(r,null,2);status('probe-status',r.note||'No diagnostic note',!okay);}}catch(e){if(seen!==revision)return;if(name==='probe'){$('readout').textContent='Handshake failed';metrics([]);}status(name==='probe'?'probe-status':'entry-status',e.message||String(e),true);}finally{busyState(false);}}
+$('refresh').onclick=()=>settings();$('verify').onclick=()=>action('status');$('probe').onclick=()=>action('probe');
+window.studioPlugin.onContextChanged(()=>{if(!busy)settings();});
+settings();
+})();
+</script></body></html>

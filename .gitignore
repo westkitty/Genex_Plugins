@@ -1,0 +1,9 @@
+# Local or generated tooling artifacts
+.DS_Store
+node_modules/
+.npm/
+coverage/
+*.log
+.env
+.env.*
+!.env.example
